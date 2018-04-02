@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!-- 配置 Handler -->
+    <context:component-scan base-package="com.*.controller"/>
+    <mvc:annotation-driven/>
+    <mvc:resources mapping="/**" location="/"/>
+
+    <!-- 视图解析器 默认jsp解析，默认使用jstl标签，classpath下的有jstl的包 -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/"/>
+    <property name="suffix" value=".html"/>
+    </bean>
+
+
+     <!--静态资源管理
+    location="/static/"：表示webapp目录下的static包下的所有文件
+    mapping="/static/**"：以/static开头的所有请求路径-->
+
+
+</beans>

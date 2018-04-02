@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>H-ui</title>
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="static/h-ui/css/H-ui.min.css">
+    <link rel="stylesheet" href="static/h-ui.admin/css/H-ui.admin.css">
+    <link rel="stylesheet" href="static/Hui-iconfont/1.0.8/iconfont.css">
+    <link rel="stylesheet" href="static/h-ui.admin/skin/default/skin.css" id="skin">
+    <link rel="stylesheet" href="static/h-ui.admin/css/style.css">
+</head>
+<body>
+<article class="page-container">
+    <form class="form form-horizontal" id="form-edit-toy" method="post">
+        <input type="hidden" name="name" id="name"/>
+        <input type="hidden" id="word" id="word"/>
+
+        <div class="row cl">
+            <label for="mName" class="form-label col-xs-4 col-ms-3"
+                   style="padding-left: 8px;">
+                <span class="c-red">*</span>&nbsp;姓名:
+            </label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" step="0.01" class="input-text radius"
+                       placeholder="姓名" id="mName" name="mName">
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label for="mPhone" class="form-label col-xs-4 col-ms-3"
+                   style="padding-left: 8px;">
+                <span class="c-red">*</span>&nbsp;联系电话:
+            </label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" step="0.01" class="input-text radius"
+                       placeholder="联系电话" id="mPhone" name="mPhone">
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label for="mCardNo" class="form-label col-xs-4 col-ms-3"
+                   style="padding-left: 8px;">
+                <span class="c-red">*</span>&nbsp;会员卡号:
+            </label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" step="0.01" class="input-text radius"
+                       placeholder="会员卡号" id="mCardNo" name="mCardNo">
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label for="mLevel" class="form-label col-xs-4 col-ms-3"
+                   style="padding-left: 8px;">
+                <span class="c-red">*</span>&nbsp;会员级别:
+            </label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <select id="mLevel" name="mLevel">
+                    <option value="-1" selected>---请选择---</option>
+                    <option value="1">一级</option>
+                    <option value="2">二级</option>
+                    <option value="3">三级</option>
+                    <option value="4">四级</option>
+                </select>
+                <!--<input type="text" step="0.01" class="input-text radius"
+                       placeholder="会员级别" id="mLevel" name="mLevel">-->
+            </div>
+        </div>
+
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input onclick="btnLogin()" type="button" class="btn btn-primary radius"
+                       value="&nbsp;&nbsp;保存&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="static/h-ui/js/H-ui.min.js"></script>
+<script src="static/h-ui.admin/js/H-ui.admin.js"></script>
+<script src="static/layer/2.4/layer.js"></script>
+<script src="js/jquery.validation/jquery.validate.js"></script>
+<script src="js/jquery.validation/validate-methods.js"></script>
+<script src="js/jquery.validation/messages_zh.js"></script>
+<script>
+    $(window).on('load', () => {
+        var id = localStorage.getItem("id")
+        // 存入隐藏表单域中
+        $("#word").val(id)
+        if(id != 0){
+            console.log("修改")
+            $.ajax({
+                type:'get',
+                dataType:'json',
+                data:{mId:id},
+                url:'/api/findById',
+                success:function (data) {
+                    $("#mName").val(data.mName)
+                    $("#mPhone").val(data.mPhone)
+                    $("#mCardNo").val(data.mCardNo)
+                    $("#mLevel").val(data.mLevel)
+                }
+            })
+        }
+
+    })
+
+    // 保存
+    function btnLogin(){
+        var id = 0
+        var formData = ({
+            mName:$("#mName").val(),
+            mPhone:$("#mPhone").val(),
+            mCardNo:$("#mCardNo").val(),
+            mLevel:$("#mLevel").val(),
+            mId:$("#word").val()
+        })
+        console.log(formData.mLevel)
+        $.ajax({
+            type:'get',
+            url:'/api/modify',
+            dataType:'json',
+            data:formData,
+            success:function (data) {
+                if(data.code == 200){
+                    location.href = "main.html"
+                }else{
+                    lay.msg(data.message,{icon: 1, time: 1000})
+                    window.reload()
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

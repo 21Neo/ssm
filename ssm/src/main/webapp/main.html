@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>H-ui</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="static/h-ui/css/H-ui.min.css">
+  <link rel="stylesheet" href="static/h-ui.admin/css/H-ui.admin.css">
+  <link rel="stylesheet" href="static/Hui-iconfont/1.0.8/iconfont.css">
+  <link rel="stylesheet" href="static/h-ui.admin/skin/default/skin.css" id="skin">
+  <link rel="stylesheet" href="static/h-ui.admin/css/style.css">
+</head>
+<body>
+<div class="page-container">
+  <form id="form" class="form form-horizontal">
+    <div class="row cl">
+      <label class="form-label col-xs-1" for="mName">
+        姓名:
+      </label>
+      <div class="formControls col-xs-2">
+        <input id="mName" class="input-text size-L" type="text">
+      </div>
+
+      <label class="form-label col-xs-1" for="mCardNo">
+        会员卡号:
+      </label>
+      <div class="formControls col-xs-2">
+        <input id="mCardNo" class="input-text size-L" type="text">
+      </div>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="button" id="btnSearch"
+             class="btn btn-success radius size-L"
+             value="&nbsp;查&nbsp;&nbsp;&nbsp;&nbsp;询&nbsp;">
+      <button type="button" class="btn btn-success radius size-L"  onclick="add()">新增会员</button>
+    </div>
+  </form>
+
+  <table class="table table-border table-bordered table-hover table-bg table-sort" style="margin-top: 30px">
+    <thead>
+    <tr class="text-c">
+      <td>序号</td>
+      <td>姓名</td>
+      <td>联系电话</td>
+      <td>会员级别</td>
+      <td>会员卡号</td>
+      <td>入会时间</td>
+      <td>操作</td>
+    </tr>
+    </thead>
+
+    <tfoot>
+    <tr class="text-c">
+      <td>序号</td>
+      <td>姓名</td>
+      <td>联系电话</td>
+      <td>会员级别</td>
+      <td>会员卡号</td>
+      <td>入会时间</td>
+      <td>操作</td>
+    </tr>
+    </tfoot>
+
+    <tbody></tbody>
+  </table>
+</div>
+
+
+<div class="footer" style="margin-top: 30px">
+  Copyright &copy;2018-2028 SONG.net All Rights Reserved.
+</div>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="static/h-ui/js/H-ui.min.js"></script>
+<script src="static/layer/2.4/layer.js"></script>
+<script src="js/jquery.contextmenu.r2.js"></script>
+<script>
+  $(window).on('load', () => {
+    // 隐藏表格
+    $("table").hide()
+      fetch()
+
+    $("#btnSearch").click(() => {
+      fetch()
+    })
+  })
+
+  function add() {
+      // 新增
+      var id=0
+      localStorage.setItem("id",id)
+      location.href = "modify.html"
+  }
+
+  function fetch(){
+      var formData = {
+          mName: $("#mName").val(),
+          mCardNo: $("#mCardNo").val(),
+      }
+      $.ajax({
+          type: 'get',
+          url: '/api/find',
+          data: formData,
+          dataType: 'json',
+          success: function (data) {
+              console.log(data)
+              if(data.code && data.code ==400){
+                  layer.msg(data.message, {icon: 1, time: 1000})
+                  return;
+              }
+              if(data){
+                  $("tbody").empty()
+                  // 显示表格
+                  $("table").show()
+              }
+              var text = ``
+              $.each(data,(i,trade)=>{
+                  text += `
+                  <tr class="text-c">
+                    <td>${i}</td>
+                    <td>${trade.mName}</td>
+                    <td>${trade.mPhone}</td>
+                    <td>${trade.mLevel}</td>
+                    <td>${trade.mCardNo}</td>
+                    <td>${trade.mInTime}</td>
+                    <td>
+                      <button class="btn btn-success radius" onclick="editMember(${trade.mId})">修改</button>
+                      &nbsp;&nbsp;
+                      <button class="btn btn-danger radius" onclick="">删除</button>
+                    </td>
+                  </tr>
+                    `
+              })
+              $("tbody").append(text)
+          }
+      })
+  }
+
+  // 修改
+  function editMember(id){
+      /*alert(id)*/
+      localStorage.setItem("id",id)
+      location.href = "modify.html"
+  }
+
+</script>
+</body>
+</html>
